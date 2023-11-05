@@ -4,54 +4,39 @@ class Api::V1::PeopleController < ApplicationController
   # GET /people
   def index
     @people = Person.all
-
-    if @people
-      render json: { status: "SUCCESS", message: "All the people fetched successfully", data: @people }, status: :ok
-    else
-      # render json: @people.errors, status: :bad_request
-      render json: { status: "FAIL", message: "People cannot be fetched" }, status: :unprocessable_entity
-    end
+    render_success("People fetched successfully", @people)
   end
 
   # GET /people/1
   def show
-    if @person
-      render json: { status: "SUCCESS", message: "Person fetched successfully", data: @person }, status: :ok
-    else
-      # render json: @person.errors, status: :bad_request
-      render json: { status: "FAIL", message: "Person cannot be fetched" }, status: :unprocessable_entity
-    end
+    render_success("Person fetched successfully", @person)
   end
 
   # POST /people
   def create
     @person = Person.new(person_params)
-
     if @person.save
-      render json: { status: "SUCCESS", message: "Person created successfully", data: @person }, status: :created
+      render_created("Person created successfully", @person)
     else
-      # render json: @person.errors, status: :unprocessable_entity
-      render json: { status: "FAIL", message: "Person cannot be created" }, status: :unprocessable_entity
+      render_error("Person cannot be created", @person.errors)
     end
   end
 
   # PATCH/PUT /people/1
   def update
-    if @person.update!(person_params)
-      render json: { status: "SUCCESS", message: "Person updated successfully", data: @person }, status: :ok
+    if @person.update(person_params)
+      render_success("Person updated successfully", @person)
     else
-      # render json: @person.errors, status: :unprocessable_entity
-      render json: { status: "FAIL", message: "Person cannot be updated" }, status: :unprocessable_entity
+      render_error("Person cannot be updated", @person.errors)
     end
   end
 
   # DELETE /people/1
   def destroy
-    if @person.destroy!
-      render json: { status: "SUCCESS", message: "Person deleted successfully" }, status: :ok
+    if @person.destroy
+      render_success("Person deleted successfully", nil)
     else
-      # render json: @person.errors, status: :bad_request
-      render json: { status: "FAIL", message: "Person cannot be deleted" }, status: :bad_request
+      render_error("Person cannot be deleted", @person.errors)
     end
   end
 
@@ -59,9 +44,23 @@ class Api::V1::PeopleController < ApplicationController
 
   def set_person
     @person = Person.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "FAIL", message: "Person not found" }, status: :not_found
   end
 
   def person_params
     params.require(:person).permit(:name, :relationship)
+  end
+
+  def render_success(message, data)
+    render json: { status: "SUCCESS", message:, data: }, status: :ok
+  end
+
+  def render_created(message, data)
+    render json: { status: "SUCCESS", message:, data: }, status: :created
+  end
+
+  def render_error(message, errors = {}, status = :unprocessable_entity)
+    render json: { status: "FAIL", message:, errors: }, status:
   end
 end
