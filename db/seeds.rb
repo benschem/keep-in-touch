@@ -1,8 +1,30 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-Person.create({ name: "Test", relationship: "friend" })
+require "faker"
+require 'date'
+require 'action_view'
+require 'action_view/helpers'
+include ActionView::Helpers::DateHelper
+
+puts "Cleaning database..."
+Person.destroy_all
+Contact.destroy_all
+
+puts "Creating some people..."
+10.times do
+  Person.create({ name: Faker::Name.name, relationship: ["friend", "family"].sample })
+  puts "#{Person.last.name} created with relationship #{Person.last.relationship}"
+end
+
+puts "Creating some contact history..."
+Person.all.each do |person|
+  (1..10).to_a.sample.times do
+    person.contacts.create(
+      {
+        date: rand(1.months).seconds.ago,
+        contact_type: ["call", "message", "in person"].sample,
+        initiated_by: ["you", "them", "other"].sample,
+        context: ["group", "solo"].sample
+      }
+    )
+    puts "Contact added for #{person.name}. Last contact: #{time_ago_in_words(person.contacts.last.date)} ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
+  end
+end

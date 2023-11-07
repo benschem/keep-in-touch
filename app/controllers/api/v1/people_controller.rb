@@ -3,7 +3,7 @@ class Api::V1::PeopleController < ApplicationController
 
   # GET /people
   def index
-    @people = Person.all
+    @people = Person.includes(:contacts).all
     render_success("People fetched successfully", @people)
   end
 
@@ -43,7 +43,7 @@ class Api::V1::PeopleController < ApplicationController
   private
 
   def set_person
-    @person = Person.find(params[:id])
+    @person = Person.includes(:contacts).find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { status: "FAIL", message: "Person not found" }, status: :not_found
   end
@@ -53,7 +53,13 @@ class Api::V1::PeopleController < ApplicationController
   end
 
   def render_success(message, data)
-    render json: { status: "SUCCESS", message:, data: }, status: :ok
+    render json: {
+      status: "SUCCESS",
+      message:,
+      data: data.as_json(except: %i[created_at updated_at],
+                         include: { contacts: { except: %i[created_at updated_at],
+                                                methods: :formatted_date } })
+    }, status: :ok
   end
 
   def render_created(message, data)
