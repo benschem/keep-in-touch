@@ -58,7 +58,7 @@ class Api::V1::PeopleController < ApplicationController
       message:,
       data: data.as_json(except: %i[created_at updated_at],
                          include: { contacts: { except: %i[created_at updated_at],
-                                                methods: :formatted_date } })
+                                                methods: :days_ago } })
     }, status: :ok
   end
 

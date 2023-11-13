@@ -2,7 +2,7 @@ require "faker"
 require 'date'
 require 'action_view'
 require 'action_view/helpers'
-include ActionView::Helpers::DateHelper
+# include ActionView::Helpers::DateHelper
 
 puts "Cleaning database..."
 Person.destroy_all
@@ -19,12 +19,13 @@ Person.all.each do |person|
   (1..10).to_a.sample.times do
     person.contacts.create(
       {
-        date: rand(1.months).seconds.ago,
+        date: DateTime.parse(rand(1.months).seconds.ago.strftime("%Y-%m-%d %H:%M:%S")),
         contact_type: ["call", "message", "in person"].sample,
         initiated_by: ["you", "them", "other"].sample,
         context: ["group", "solo"].sample
       }
     )
-    puts "Contact added for #{person.name}. Last contact: #{time_ago_in_words(person.contacts.last.date)} ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
+    # puts "Contact added for #{person.name}. Last contact: #{time_ago_in_words(person.contacts.last.date)} ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
+    puts "Contact added for #{person.name}. Last contact: #{person.contacts.days_ago} days ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
   end
 end

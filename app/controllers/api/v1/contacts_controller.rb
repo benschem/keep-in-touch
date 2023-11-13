@@ -1,17 +1,6 @@
 class Api::V1::ContactsController < ApplicationController
-  before_action :set_person, only: %i[index show create update destroy]
-  before_action :set_contact, only: %i[show update destroy]
-
-  # GET /people/1/contacts
-  def index
-    @contacts = @person.contacts
-    render_success("Contact history for #{@person.name} fetched successfully", @contacts)
-  end
-
-  # GET /people/1/contacts/1
-  def show
-    render_success("Contact details fetched successfully", @contact)
-  end
+  before_action :set_person, only: %i[create update destroy]
+  before_action :set_contact, only: %i[update destroy]
 
   # POST /people/1/contacts
   def create
@@ -32,7 +21,7 @@ class Api::V1::ContactsController < ApplicationController
     end
   end
 
-  # DELETE /people/1
+  # DELETE /people/1/contacts/1
   def destroy
     if @contact.destroy
       render_success("Contact history deleted successfully", nil)
@@ -44,7 +33,7 @@ class Api::V1::ContactsController < ApplicationController
   private
 
   def set_person
-    @person = Person.find(params[:person_id])
+    @person = Person.includes(:contacts).find(params[:person_id])
   rescue ActiveRecord::RecordNotFound
     puts params
     render json: { status: "FAIL", message: "Person not found" }, status: :not_found
@@ -61,7 +50,13 @@ class Api::V1::ContactsController < ApplicationController
   end
 
   def render_success(message, data)
-    render json: { status: "SUCCESS", message:, data: }, status: :ok
+    render json: {
+      status: "SUCCESS",
+      message:,
+      data: data.as_json(except: %i[created_at updated_at],
+                         include: { contacts: { except: %i[created_at updated_at],
+                                                methods: :days_ago } })
+    }, status: :ok
   end
 
   def render_created(message, data)
