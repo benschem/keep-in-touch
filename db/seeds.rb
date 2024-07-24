@@ -1,31 +1,9 @@
-require "faker"
-require 'date'
-require 'action_view'
-require 'action_view/helpers'
-# include ActionView::Helpers::DateHelper
-
-puts "Cleaning database..."
-Person.destroy_all
-Contact.destroy_all
-
-puts "Creating some people..."
-10.times do
-  Person.create({ name: Faker::Name.name, relationship: ["friend", "family"].sample })
-  puts "#{Person.last.name} created with relationship #{Person.last.relationship}"
-end
-
-puts "Creating some contact history..."
-Person.all.each do |person|
-  (1..10).to_a.sample.times do
-    person.contacts.create(
-      {
-        date: DateTime.parse(rand(1.months).seconds.ago.strftime("%Y-%m-%d %H:%M:%S")),
-        contact_type: ["call", "message", "in person"].sample,
-        initiated_by: ["you", "them", "other"].sample,
-        context: ["group", "solo"].sample
-      }
-    )
-    # puts "Contact added for #{person.name}. Last contact: #{time_ago_in_words(person.contacts.last.date)} ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
-    puts "Contact added for #{person.name}. Last contact: #{person.contacts.days_ago} days ago, Type: #{person.contacts.last.contact_type}, Initiated by: #{person.contacts.last.initiated_by}, Context: #{person.contacts.last.context}."
-  end
-end
+# This file should ensure the existence of records required to run the application in every environment (production,
+# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
+# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+#
+# Example:
+#
+#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
+#     MovieGenre.find_or_create_by!(name: genre_name)
+#   end
