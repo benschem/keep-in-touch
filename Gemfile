@@ -75,4 +75,8 @@ gem 'rubocop', require: false
 # Load environment variables from .env into ENV in development [https://github.com/bkeepers/dotenv]
 gem "dotenv-rails"
 
+# Realistic fake data for seeds
 gem "faker"
+
+# Authentication
+gem "devise"
