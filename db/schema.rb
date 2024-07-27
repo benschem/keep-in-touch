@@ -17,19 +17,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_103406) do
   create_table "interactions", force: :cascade do |t|
     t.bigint "person_id", null: false
     t.datetime "date"
-    t.string "method"
-    t.string "initiated_by"
-    t.string "context"
+    t.integer "method"
+    t.integer "initiated_by"
+    t.integer "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_interactions_on_person_id"
   end
 
   create_table "people", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.string "name"
-    t.string "relationship"
+    t.integer "relationship"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_people_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -47,4 +49,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_103406) do
   end
 
   add_foreign_key "interactions", "people"
+  add_foreign_key "people", "users"
 end

@@ -1,4 +1,6 @@
 class Person < ApplicationRecord
+  enum :relationship, { friend: 0, family: 1 }
+
   belongs_to :user
 
   has_many :interactions, -> { order('date DESC') }, dependent: :destroy

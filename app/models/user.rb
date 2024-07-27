@@ -9,7 +9,7 @@ class User < ApplicationRecord
   has_many :people, dependent: :destroy
   has_many :interactions, through: :people
 
-  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP}, presence: true, uniqueness: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
   validates :first_name, presence: true
   validates :last_name, presence: true
 
