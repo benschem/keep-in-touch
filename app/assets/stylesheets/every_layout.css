@@ -1,0 +1,39 @@
+/* -------------------------------------------------------------------------- */
+/*                                  The Stack                                 */
+/* -------------------------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.stack > * {
+  margin-block: 0;
+}
+
+.stack > * + * {
+  margin-block-start: var(--space, 1.5rem);
+}
+
+.stack-exception + * {
+  --space: 3rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   The Box                                  */
+/* -------------------------------------------------------------------------- */
+
+.box {
+  --s1: 1rem;
+  padding: var(--s1);
+  border: var(--border-thin) solid;
+  --color-light: #fff;
+  --color-dark: #000;
+  color: var(--color-dark);
+  background-color: var(--color-light);
+}
+
+.box * {
+  color: inherit;
+}

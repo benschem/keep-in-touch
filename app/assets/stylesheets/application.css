@@ -12,4 +12,8 @@
  *
  *= require_tree .
  *= require_self
+ *= require_reset
+ *= require_variables
+ *= require_every_layout
+ *= require_person
  */

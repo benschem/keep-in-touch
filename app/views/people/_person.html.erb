@@ -1,13 +1,49 @@
-<div>
-  <h2><%= person.name %></h2>
-  <p><%= person.relationship %></p>
-</div>
-<div>
-  <% last_interaction = person.interactions.last %>
-  <ul>
-    <li><%= last_interaction.date %></li>
-    <li><%= last_interaction.method %></li>
-    <li><%= last_interaction.initiated_by %></li>
-    <li><%= last_interaction.context %></li>
-  </ul>
+<% last_interaction = person.interactions.last %>
+
+<div class="person-container">
+  <div class="text">
+    <h2><%= person.name %></h2>
+  </div>
+  <div>
+    <div class="icons">
+      <div>
+        <% if last_interaction.solo? %>
+          Personal
+        <% elsif last_interaction.in_a_group? %>
+          Group
+        <% end %>
+      </div>
+
+      <div>
+        <% if last_interaction.message? %>
+          message
+        <% elsif last_interaction.call? %>
+          call
+        <% elsif last_interaction.in_person? %>
+          catch up
+        <% end %>
+      </div>
+
+   <!--   <div>-->
+        <%# if last_interaction.solo? %>
+          <%#= render_icon "individual", size: "40px" %>
+        <%# elsif last_interaction.in_a_group? %>
+          <%#= render_icon "group", size: "40px" %>
+        <%# end %>
+<!--      </div>
+
+      <div>
+        <%# if last_interaction.message? %>-->
+          <%#= render_icon "message", size: "40px" %>
+        <%# elsif last_interaction.call? %>
+          <%#= render_icon "call", size: "40px" %>
+        <%# elsif last_interaction.in_person? %>
+          <%#= render_icon "handshake", size: "50px" %>
+        <%# end %>
+      </div>
+    </div>
+    <div class="text" data-controller="time-ago" data-time-ago-date-value="<%= last_interaction.date %>">
+      <p data-time-ago-target="output"></p>
+    </div>
+  </div>
 </div>
